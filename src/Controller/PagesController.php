@@ -16,6 +16,9 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
+use Cake\Mailer\TransportFactory;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
@@ -43,8 +46,9 @@ class PagesController extends AppController
      *   be found and not in debug mode.
      * @throws \Cake\View\Exception\MissingTemplateException In debug mode.
      */
-    public function display(string ...$path): ?Response
+    public function rahul(string ...$path): ?Response
     {
+        // die('rahul');
         if (!$path) {
             return $this->redirect('/');
         }
@@ -52,7 +56,7 @@ class PagesController extends AppController
             throw new ForbiddenException();
         }
         $page = $subpage = null;
-
+        
         if (!empty($path[0])) {
             $page = $path[0];
         }
@@ -60,7 +64,7 @@ class PagesController extends AppController
             $subpage = $path[1];
         }
         $this->set(compact('page', 'subpage'));
-
+        
         try {
             return $this->render(implode('/', $path));
         } catch (MissingTemplateException $exception) {
