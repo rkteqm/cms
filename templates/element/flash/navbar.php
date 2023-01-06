@@ -8,19 +8,24 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li>
                         <a class="navbar-brand" href="">
-                            <?= $this->Html->link(__('Home'), ['action' => 'list'], ['class' => 'nav-link active']) ?>
+                            <?= $this->Html->link(__('Home'), ['action' => 'home'], ['class' => 'nav-link active']) ?>
                         </a>
                     </li>
 
                     <?php
-                    if (isset($_SESSION['id'])) {
+                    $session = $this->request->getSession(); //read session data
+                    if($session->read('email') != null){
                     ?>
 
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="logout.php">Logout</a>
+                            <a class="navbar-brand" href="">
+                                <?= $this->Html->link(__('Listing'), ['action' => 'list'], ['class' => 'nav-link active']) ?>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="users.php">Users</a>
+                            <a class="navbar-brand" href="">
+                                <?= $this->Html->link(__('Logout'), ['action' => 'logout'], ['class' => 'nav-link active']) ?>
+                            </a>
                         </li>
 
                     <?php

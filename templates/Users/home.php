@@ -1,16 +1,4 @@
 <?php
-
-use Phinx\Db\Action\Action;
-
-$session = $this->request->getSession(); //read session data
-// echo $session->read('email');
-if ($session->read('email') != null) {
-    // echo "rahul";
-} else {
-    $this->redirect(['action' => 'login']);
-}
-?>
-<?php
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\User> $users
@@ -44,9 +32,7 @@ if ($session->read('email') != null) {
                         <td><?= h($user->gender) ?></td>
                         <td class="actions">
                             <?= $this->Html->link(__(''), ['action' => 'myview', $user->id], ['class' => 'fa-solid fa-eye']) ?>
-                            <?= $this->Html->link(__(''), ['action' => 'myedit', $user->id], ['class' => 'fa-solid fa-pen-to-square']) ?>
-                            <?= $this->Form->postLink(__(''), ['action' => 'mydelete', $user->id], ['class' => 'fa-solid fa-trash'], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id)]) ?>
-                        </td>
+                            </td>
                     </tr>
                     <?php $i++ ?>
                 <?php endforeach; ?>

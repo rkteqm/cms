@@ -56,12 +56,6 @@
                             </div>
                             <span class="error-message" id="gender-error"></span>
                         </div>
-                        <!-- <div class="col-md-6">
-                            <label for="gender">Gender</label>
-                            <input type="radio" name="gender" value="Male">Male
-                            <input type="radio" name="gender" value="Female">Female
-                            <span class="error-message" id="gender-error"></span>
-                        </div> -->
                     </div>
                 </fieldset>
                 <?= $this->Form->button(__('Submit')) ?>

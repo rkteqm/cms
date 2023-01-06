@@ -26,10 +26,10 @@ class UsersController extends AppController
     public function index()
     {
         $users = $this->paginate($this->Users);
-        
+
         $this->set(compact('users'));
     }
-    
+
     /**
      * View method
      *
@@ -42,10 +42,20 @@ class UsersController extends AppController
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
-        
+
         $this->set(compact('user'));
     }
-    
+
+    public function myview($id = null)
+    {
+        $this->viewBuilder()->setLayout('mydefault');
+        $user = $this->Users->get($id, [
+            'contain' => [],
+        ]);
+
+        $this->set(compact('user'));
+    }
+
     public function signup()
     {
         $this->viewBuilder()->setLayout('mydefault');
@@ -56,14 +66,14 @@ class UsersController extends AppController
             // die;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-                
+
                 return $this->redirect(['action' => 'list']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
         $this->set(compact('user'));
     }
-    
+
     public function login()
     {
         $this->viewBuilder()->setLayout('mydefault');
@@ -73,21 +83,39 @@ class UsersController extends AppController
             $password =  $this->request->getData('password');
 
             $result = $this->Users->login($email, $password);
-            if($result){
-                    $this->Flash->success(__('The user has been logged in successfully.'));
-                    
-                    return $this->redirect(['action' => 'list']);
+            if ($result) {
+                $session = $this->getRequest()->getSession(); //get session
+                $session->write('email', $email); //write name value to session
+                $this->Flash->success(__('The user has been logged in successfully.'));
+
+                return $this->redirect(['action' => 'list']);
             }
             $this->Flash->error(__('Please enter valid credential..'));
         }
         $this->set(compact('user'));
     }
     
+    public function logout()
+    {
+        $session = $this->request->getSession(); //read session data
+        // $this->$session->delete();
+        $session->destroy();
+        return $this->redirect(['action' => 'login']);
+    }
+
     public function list()
     {
         $this->viewBuilder()->setLayout('mydefault');
         $users = $this->paginate($this->Users);
-        
+
+        $this->set(compact('users'));
+    }
+
+    public function home()
+    {
+        $this->viewBuilder()->setLayout('mydefault');
+        $users = $this->paginate($this->Users);
+
         $this->set(compact('users'));
     }
 
@@ -134,6 +162,24 @@ class UsersController extends AppController
                 $this->Flash->success(__('The user has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        }
+        $this->set(compact('user'));
+    }
+
+    public function myedit($id = null)
+    {
+        $this->viewBuilder()->setLayout('mydefault');
+        $user = $this->Users->get($id, [
+            'contain' => [],
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The user has been saved.'));
+
+                return $this->redirect(['action' => 'list']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
