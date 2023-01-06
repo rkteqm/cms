@@ -343,11 +343,83 @@ $(document).ready(function () {
             errorcheck = 1;
         }
 
+        // email validation
+        var validRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        var email = $("#email").val();
+        email = email.trim();
+        if (email == null || email == "") {
+            $('#email-error').html("Please enter your email");
+            errorcheck = 1;
+        } else if (!email.match(validRegex)) {
+            $('#email-error').html("Please enter valid email");
+            errorcheck = 1;
+        }
+
+        // phone number validation
+        var phone = $("#phone-number").val();
+        phone = phone.trim();
+        if (phone == "") {
+            $('#phone-number-error').html("Please enter your phone number");
+            errorcheck = 1;
+        } else if (isNaN(phone)) {
+            $('#phone-number-error').html("Please enter numeric only");
+            errorcheck = 1;
+        } else if (phone.length != 10) {
+            $('#phone-number-error').html("please enter 10 digit only");
+            errorcheck = 1;
+        }
+
+        // password validation
+        var password = $("#password").val();
+        password = password.trim();
+        if (password == "") {
+            $('#password-error').html("Please enter your password");
+            errorcheck = 1;
+        } else if (password.length < 8) {
+            $('#password-error').html("please enter at least 8 characters");
+            errorcheck = 1;
+        }
+
+        // gender validation
+        var gender = "";
+        var ele = document.getElementsByName('gender');
+        for (i = 0; i < ele.length; i++) {
+            if (ele[i].checked) {
+                gender = ele[i].value;
+            }
+        }
+        gender = gender.trim();
+        if (gender == "") {
+            $('#gender-error').html("Please select your gender");
+            errorcheck = 1;
+        }
+
         if (errorcheck == 0) {
 
-        }else{
+        } else {
             return false;
         }
 
     });
+
+    // error removing on keyup
+    $('input[name=first_name]').keyup(function () {
+        $('#first-name-error').html("");
+    });
+    $('input[name=last_name]').keyup(function () {
+        $('#last-name-error').html("");
+    });
+    $('input[name=email]').keyup(function () {
+        $('#email-error').html("");
+    });
+    $('input[name=phone_number]').keyup(function () {
+        $('#phone-number-error').html("");
+    });
+    $('input[name=password]').keyup(function () {
+        $('#password-error').html("");
+    });
+    $('input[name=gender]').click(function () {
+        $('#gender-error').html("");
+    });
+
 });

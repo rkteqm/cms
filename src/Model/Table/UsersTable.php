@@ -133,4 +133,23 @@ class UsersTable extends Table
 
         return $rules;
     }
+
+    // this is only for getting data for particular id using UsersTable // custom function
+    public function getdata($id){
+        // $query = $users
+        // ->find()
+        // ->select(['id', 'first_name'])
+        // ->where(['id =' => ])
+        // ->order(['created' => 'DESC']);
+        $result = $this->find('all')->where(['id' => $id])->first();
+        return $result;
+    }
+    public function login($email, $password){
+        $result = $this->find('all')->where(['email' => $email, 'password' => $password])->first();
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

@@ -5,15 +5,16 @@
  * @var \App\Model\Entity\User $user
  */
 ?>
+<?= $this->Html->script('script') ?>
+
 <div class="container">
     <div class="row">
         <aside class="column">
-            <div class="side-nav">
-                <h4 class="heading"><?= __('Actions') ?></h4>
-                <?= $this->Html->link(__('List Users'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+            <div class="" style="text-align:center;">
+                <h1 class="heading mt-3"><?= __('Please Signup Here') ?></h1>
             </div>
         </aside>
-        <div class="column-responsive column">
+        <div class="container">
             <div class="users form content">
                 <?= $this->Form->create($user) ?>
                 <fieldset>
@@ -45,7 +46,8 @@
                             <div class="rahul">
                                 <?= $this->Form->radio(
                                     'gender',
-                                    ['Male' => 'Male', 'Female' => 'Female'], ['required' => false]
+                                    ['Male' => 'Male', 'Female' => 'Female'],
+                                    ['required' => false]
                                 ) ?>
                             </div>
                         </div>
