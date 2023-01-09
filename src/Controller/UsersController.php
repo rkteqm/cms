@@ -62,8 +62,6 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
-            // echo $user;
-            // die;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -94,7 +92,7 @@ class UsersController extends AppController
         }
         $this->set(compact('user'));
     }
-    
+
     public function logout()
     {
         $session = $this->request->getSession(); //read session data
@@ -105,6 +103,12 @@ class UsersController extends AppController
 
     public function list()
     {
+        $session = $this->request->getSession(); //read session data
+        if ($session->read('email') != null) {
+        } else {
+            $this->redirect(['action' => 'login']);
+        }
+        
         $this->viewBuilder()->setLayout('mydefault');
         $users = $this->paginate($this->Users);
 
@@ -128,12 +132,8 @@ class UsersController extends AppController
     {
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
-            // print_r($this->request->getData());
-            // echo $this->request->getData('first_name');
-            // die;
             $user = $this->Users->patchEntity($user, $this->request->getData());
-            // echo $user;
-            // die;
+            
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -170,6 +170,11 @@ class UsersController extends AppController
 
     public function myedit($id = null)
     {
+        $session = $this->request->getSession(); //read session data
+        if ($session->read('email') != null) {
+        } else {
+            $this->redirect(['action' => 'login']);
+        }
         $this->viewBuilder()->setLayout('mydefault');
         $user = $this->Users->get($id, [
             'contain' => [],
@@ -208,7 +213,7 @@ class UsersController extends AppController
 
     public function mydelete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'mydelete']);
         $user = $this->Users->get($id);
         if ($this->Users->delete($user)) {
             $this->Flash->success(__('The user has been deleted.'));

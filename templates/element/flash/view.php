@@ -5,7 +5,7 @@
  */
 ?>
 <div class="row">
-    <div class="column-responsive column-80">
+    <div class="container">
         <div class="users view content">
             <h3><?= h($user->id) ?></h3>
             <table>
