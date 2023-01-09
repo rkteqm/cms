@@ -3,6 +3,10 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\User> $users
  */
+$this->Breadcrumbs->add(
+    'Login',
+    ['controller' => 'Users', 'action' => 'login']
+);
 ?>
 <div class="users index content">
     <h3><?= __('Users') ?></h3>

@@ -368,16 +368,40 @@ $(document).ready(function () {
             $('#phone-number-error').html("please enter 10 digit only");
             errorcheck = 1;
         }
-
         // password validation
-        var password = $("#password").val();
-        password = password.trim();
-        if (password == "") {
-            $('#password-error').html("Please enter your password");
-            errorcheck = 1;
-        } else if (password.length < 8) {
-            $('#password-error').html("please enter at least 8 characters");
-            errorcheck = 1;
+        var regularExpressionP = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+        if ($("#password").val() == null) {
+            // alert('$("#password").val()')
+        } else {
+            var password = $("#password").val();
+            password = password.trim();
+            if (password == "") {
+                $('#password-error').html("Please enter your password");
+                errorcheck = 1;
+            } else if (password.length < 8) {
+                $('#password-error').html("please enter at least 8 characters");
+                errorcheck = 1;
+            } else if (!password.match(regularExpressionP)) {
+                $('#password-error').html("password should contain alteast 8 digits, 1 Special Character, one number, 1 uppercase, 1 lowercase");
+                errorcheck = 1;
+            }
+
+            // confirm password validation
+            var cpassword = $("#confirm-password").val();
+            cpassword = cpassword.trim();
+            if (cpassword == "") {
+                $('#confirm-password-error').html("Please enter your confirm password");
+                errorcheck = 1;
+            } else if (cpassword.length < 8) {
+                $('#confirm-password-error').html("please enter at least 8 characters");
+                errorcheck = 1;
+            } else if (!cpassword.match(regularExpressionP)) {
+                $('#confirm-password-error').html("password should contain alteast 8 digits, 1 Special Character, one number, 1 uppercase, 1 lowercase");
+                errorcheck = 1;
+            } else if (cpassword != password) {
+                $('#confirm-password-error').html("confirm password not matched with password");
+                errorcheck = 1;
+            }
         }
 
         // gender validation
@@ -417,6 +441,9 @@ $(document).ready(function () {
     });
     $('input[name=password]').keyup(function () {
         $('#password-error').html("");
+    });
+    $('input[name=confirm_password]').keyup(function () {
+        $('#confirm-password-error').html("");
     });
     $('input[name=gender]').click(function () {
         $('#gender-error').html("");

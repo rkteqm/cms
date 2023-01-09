@@ -21,6 +21,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 <?= $this->Html->css(['user', 'normalize.min', 'milligram.min', 'cake']) ?>
 <?= $this->Html->script('script') ?>
 <?= $this->element('flash/navbar') ?>
+<div class="rahul">
+    <?= $this->Breadcrumbs->render() ?>
+</div>
 <div class="container-fluid">
     <?= $this->Flash->render() ?>
     <?= $this->fetch('content') ?>

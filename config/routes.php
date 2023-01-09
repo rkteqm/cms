@@ -55,7 +55,7 @@ return static function (RouteBuilder $routes) {
         // for showing users index page as default************made by rahul**************** 
         // ************************************************************************************
         // $builder->connect('/', ['controller' => 'Users', 'action' => 'index', 'home']);
-        $builder->connect('/', ['controller' => 'Users', 'action' => 'list', 'home']);
+        $builder->connect('/', ['controller' => 'Users', 'action' => 'home', 'home']);
 
 
         /*

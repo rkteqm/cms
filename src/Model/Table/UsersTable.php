@@ -129,20 +129,40 @@ class UsersTable extends Table
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 100)
+            ->maxLength('password', 255)
             ->requirePresence('password', 'create')
-            // ->notEmptyString('password', 'Please enter your password')
             ->add('password', [
-                'alphaNumeric' => [
-                    'rule' => ['custom', '/^[A-Z]+$/i'],
-                    // 'last' => true,
-                    'message' => 'Enter atleast one alphanumeric character'
+                'notBlank' => [
+                    'rule'    => ['notBlank'],
+                    'message' => 'Please enter your password',
+                    'last' => true
                 ],
-                'length' => [
-                    'rule' => array('minLength', '8'),
-                    'message' => 'Password atleast 8 characters long',
-                    // 'last' => true,
+                'password' => [
+                    'rule' => array('custom','(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
+                    'message' => 'password should contain alteast 8 digits, 1 Special Character, 1 number, 1 uppercase, 1 lowercase'
+                ]
+            ]);
+
+        $validator
+            ->scalar('confirm_password')
+            ->maxLength('confirm_password', 255)
+            ->requirePresence('confirm_password', 'create')
+            ->add('confirm_password', [
+                'notBlank' => [
+                    'rule'    => ['notBlank'],
+                    'message' => 'Please enter your confirm-password',
+                    'last' => true,
                 ],
+                'confirm_password' => [
+                    'rule' => array('custom','(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
+                    'last' => true,
+                    'message' => 'confirm password should contain alteast 8 digits, 1 Special Character, one number, 1 uppercase, 1 lowercase '
+                ],
+                'match' => [
+                    'rule' => array('compareWith', 'password'),
+                    'last' => true,
+                    'message' => 'Password should not match with the previous password'
+                ]
             ]);
 
         $validator
