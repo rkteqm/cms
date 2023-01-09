@@ -55,30 +55,52 @@ class UsersTable extends Table
             ->scalar('first_name')
             ->maxLength('first_name', 50)
             ->requirePresence('first_name', 'create')
-            ->notEmptyString('first_name')
             ->add('first_name', [
+                'notBlank' => [
+                    'rule'    => ['notBlank'],
+                    'message' => 'Please enter your first name',
+                    'last' => true
+                ],
+                'characters' => [
+                    'rule'    => ['custom', '/^[A-Z]+$/i'],
+                    'allowEmpty' => false,
+                    'last' => true,
+                    'message' => 'Please Enter characters only.'
+                ],
                 'length' => [
                     'rule' => ['minLength', 2],
+                    'last' => true,
                     'message' => 'First Name need to be at least 2 characters long',
-                ]
+                ],
             ]);
 
         $validator
             ->scalar('last_name')
             ->maxLength('last_name', 50)
             ->requirePresence('last_name', 'create')
-            ->notEmptyString('last_name')
             ->add('last_name', [
+                'notBlank' => [
+                    'rule'    => ['notBlank'],
+                    'message' => 'Please enter your last name',
+                    'last' => true
+                ],
+                'characters' => [
+                    'rule'    => ['custom', '/^[A-Z]+$/i'],
+                    'allowEmpty' => false,
+                    'last' => true,
+                    'message' => 'Please Enter characters only.'
+                ],
                 'length' => [
                     'rule' => ['minLength', 2],
+                    'last' => true,
                     'message' => 'Last Name need to be at least 2 characters long',
-                ]
+                ],
             ]);
 
         $validator
             ->email('email')
             ->requirePresence('email', 'create')
-            ->notEmptyString('email')
+            ->notEmptyString('email', 'Please enter your email')
             ->add('email', 'unique', [
                 'rule' => 'validateUnique', 'provider' => 'table',
                 'message' => 'Email already exist please enter another email',
@@ -86,14 +108,21 @@ class UsersTable extends Table
 
         $validator
             ->requirePresence('phone_number', 'create')
-            ->notEmptyString('phone_number')
+            ->notEmptyString('phone_number', 'Please enter your phone number')
             ->add('phone_number', [
+                'numeric' => [
+                    'rule' => 'numeric',
+                    'message' => 'Please enter numeric only',
+                    'last' => true,
+                ],
                 'minLength' => [
                     'rule' => ['minLength', 10],
+                    'last' => true,
                     'message' => 'Phone Number need to be 10 characters long',
                 ],
                 'maxLength' => [
                     'rule' => ['maxLength', 10],
+                    'last' => true,
                     'message' => 'Phone Number need to be 10 characters long',
                 ]
             ]);
@@ -102,17 +131,21 @@ class UsersTable extends Table
             ->scalar('password')
             ->maxLength('password', 100)
             ->requirePresence('password', 'create')
-            ->notEmptyString('password')
+            // ->notEmptyString('password', 'Please enter your password')
             ->add('password', [
-                'password' => [
+                'alphaNumeric' => [
+                    'rule' => ['custom', '/^[A-Z]+$/i'],
+                    // 'last' => true,
+                    'message' => 'Enter atleast one alphanumeric character'
+                ],
+                'length' => [
                     'rule' => array('minLength', '8'),
-                    'message' => 'Minimum 8 characters long'
-                ]
+                    'message' => 'Password atleast 8 characters long',
+                    // 'last' => true,
+                ],
             ]);
 
         $validator
-            ->scalar('gender')
-            ->maxLength('gender', 10)
             ->requirePresence('gender', 'create')
             ->notEmptyString('gender');
 
@@ -135,7 +168,8 @@ class UsersTable extends Table
     }
 
     // this is only for getting data for particular id using UsersTable // custom function
-    public function getdata($id){
+    public function getdata($id)
+    {
         // $query = $users
         // ->find()
         // ->select(['id', 'first_name'])
@@ -144,11 +178,12 @@ class UsersTable extends Table
         $result = $this->find('all')->where(['id' => $id])->first();
         return $result;
     }
-    public function login($email, $password){
+    public function login($email, $password)
+    {
         $result = $this->find('all')->where(['email' => $email, 'password' => $password])->first();
-        if($result){
+        if ($result) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

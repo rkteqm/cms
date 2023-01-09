@@ -5,7 +5,7 @@
  * @var \App\Model\Entity\User $user
  */
 ?>
-<?= $this->Html->script('script') ?>
+<!-- <?= $this->Html->script('script') ?> -->
 
 <div class="container">
     <div class="row">
@@ -50,6 +50,11 @@
                                     ['required' => false]
                                 ) ?>
                             </div>
+                            <?php
+                            if ($this->Form->isFieldError('gender')) {
+                                echo $this->Form->error('gender', 'Please select your Gender');
+                            }
+                            ?>
                         </div>
                     </div>
                 </fieldset>
