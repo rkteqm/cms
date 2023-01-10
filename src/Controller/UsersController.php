@@ -54,9 +54,9 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
-            echo '<pre>';
-            print_r($this->request->getData('file'));
-            die;
+            // echo '<pre>';
+            // print_r($this->request->getData('file'));
+            // die;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -102,24 +102,28 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $email = $this->request->getData('email');
-            $user->email = $email;
-            $token = rand(10000, 100000);
+            die($email);
+            $result1 = $this->Users->checkEmailExist($email);
+            if ($result1) {
+                $token = rand(10000, 100000);
+                
+                $result = $this->Users->insertToken($email, $token);
+                // die($result);
+                if ($result) {
+                    
+                    $user->email = $email;
+                    $mailer = new Mailer('default');
+                    $mailer->setTransport('gmail'); //your email configuration name
+                    $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
+                    $mailer->setTo($email);
+                    $mailer->setEmailFormat('html');
+                    $mailer->setSubject('Verify New Account');
+                    $mailer->deliver('<a href="http://localhost:8765/users/reset?token=' . $token . '">Click here</a>');
 
-            $result = $this->Users->checkMailExist($email, $token);
-            // die($result);
-            if ($result) {
+                    $this->Flash->success(__('Reset email send successfully.'));
 
-                $mailer = new Mailer('default');
-                $mailer->setTransport('gmail'); //your email configuration name
-                $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
-                $mailer->setTo($email);
-                $mailer->setEmailFormat('html');
-                $mailer->setSubject('Verify New Account');
-                $mailer->deliver('<a href="http://localhost:8765/users/reset?token=' . $token . '">Click here</a>');
-
-                $this->Flash->success(__('Reset email send successfully.'));
-
-                return $this->redirect(['action' => 'login']);
+                    return $this->redirect(['action' => 'login']);
+                }
             }
             $this->Flash->error(__('Please enter valid credential..'));
         }
@@ -234,5 +238,4 @@ class UsersController extends AppController
     public $paginate = [
         'limit' => 10
     ];
-
 }

@@ -134,16 +134,25 @@ class UsersTable extends Table
             ->scalar('password')
             ->maxLength('password', 255)
             ->requirePresence('password', 'create')
-            ->add('password', [
-                'notBlank' => [
-                    'rule'    => ['notBlank'],
-                    'message' => 'Please enter your password',
-                    'last' => true
-                ],
-                'password' => [
-                    'rule' => array('custom', '(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
-                    'message' => 'password should contain alteast 8 digits, 1 Special Character, 1 number, 1 uppercase, 1 lowercase'
-                ]
+            // ->add('password', [
+            //     'notBlank' => [
+            //         'rule'    => ['notBlank'],
+            //         'message' => 'Please enter your password',
+            //     ],
+            //     'upperCase' => [
+            //         'rule' => 'isUpperCase'
+            //     ],
+            //     'length' => [
+            //         'rule' => ['minLength', 8],
+            //         'message' => 'Enter password at least 8 characters long'
+            //     ],
+            // ]);
+            ->add('password', 'custom', [
+                'rule' => function ($value, $context) {
+                    // Custom logic that returns true/false; the password will be in the $value
+
+                },
+                'message' => 'Password must contain ...'
             ]);
 
         $validator
@@ -207,9 +216,21 @@ class UsersTable extends Table
         return $rules;
     }
 
+    
+
     public function login($email, $password)
     {
         $result = $this->find('all')->where(['email' => $email, 'password' => $password])->first();
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function checkEmailExist($email)
+    {
+        $result = $this->find('all')->where(['email' => $email])->first();
         if ($result) {
             return true;
         } else {
@@ -242,7 +263,7 @@ class UsersTable extends Table
         }
     }
 
-    public function checkMailExist($email, $token)
+    public function insertToken($email, $token)
     {
         $users = TableRegistry::get("Users");
         $query = $users->query();
