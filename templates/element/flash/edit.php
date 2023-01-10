@@ -6,6 +6,7 @@
  */
 
 use function PHPSTORM_META\type;
+
 $this->Breadcrumbs->add(
     'Login',
     ['controller' => 'Users', 'action' => 'login']
@@ -16,13 +17,20 @@ $this->Breadcrumbs->add(
 );
 ?>
 <div class="container">
-    <?= $this->Form->create($user) ?>
+    <?= $this->Form->create($user, ["enctype" => "multipart/form-data"]) ?>
     <fieldset>
         <legend><?= __('Edit User') ?></legend>
 
         <?= $this->Html->link(__('Back'), ['action' => 'list'], ['class' => 'nav-link active']) ?>
 
         <div class="row">
+            <div class="col-md-3">
+                <?= $this->Form->control('file', ['type' => 'file', 'required' => false]) ?>
+                <span class="error-message" id="file-name-error"></span>
+            </div>
+            <div class="col-md-3">
+                <td><?= $this->Html->image(h($user->file), array('width'=>'200px')) ?></td>
+            </div>
             <div class="col-md-6">
                 <?= $this->Form->control('first_name') ?>
                 <span class="error-message" id="first-name-error"></span>

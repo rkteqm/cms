@@ -20,6 +20,7 @@ $this->Breadcrumbs->add(
                     <th><?= $this->Paginator->sort('email') ?></th>
                     <th><?= $this->Paginator->sort('phone_number') ?></th>
                     <th><?= $this->Paginator->sort('gender') ?></th>
+                    <th><?= $this->Paginator->sort('file') ?></th>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
             </thead>
@@ -34,6 +35,7 @@ $this->Breadcrumbs->add(
                         <td><?= h($user->email) ?></td>
                         <td><?= h($user->phone_number) ?></td>
                         <td><?= h($user->gender) ?></td>
+                        <td><?= $this->Html->image(h($user->file), array('width'=>'60px')) ?></td>
                         <td class="actions">
                             <?= $this->Html->link(__(''), ['action' => 'myview', $user->id], ['class' => 'fa-solid fa-eye']) ?>
                             <?= $this->Html->link(__(''), ['action' => 'myedit', $user->id], ['class' => 'fa-solid fa-pen-to-square']) ?>

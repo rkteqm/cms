@@ -53,11 +53,34 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('mydefault');
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+
+            $data = $this->request->getData();
+            $productImage = $this->request->getData("file");
+            $fileName = $productImage->getClientFilename();
+            $data["file"] = $fileName;
+            $user = $this->Users->patchEntity($user, $data);
+
+            // print_r($data);die;
+            
             // echo '<pre>';
             // print_r($this->request->getData('file'));
             // die;
             if ($this->Users->save($user)) {
+                $hasFileError = $productImage->getError();
+    
+                if ($hasFileError > 0) {
+                    // no file uploaded
+                    $data["file"] = "";
+                } else {
+                    // file uploaded
+                    $fileType = $productImage->getClientMediaType();
+    
+                    if ($fileType == "image/png" || $fileType == "image/jpeg" || $fileType == "image/jpg") {
+                        $imagePath = WWW_ROOT . "img/" . $fileName;
+                        $productImage->moveTo($imagePath);
+                        $data["file"] = $fileName;
+                    }
+                }
                 $this->Flash->success(__('The user has been saved.'));
 
                 return $this->redirect(['action' => 'list']);
@@ -66,6 +89,44 @@ class UsersController extends AppController
         }
         $this->set(compact('user'));
     }
+
+    // public function signup2()
+    // {
+    //     $user = $this->Users->newEmptyEntity();
+
+    //     if ($this->request->is("post")) {
+
+    //         $data = $this->request->getData();
+    //         $productImage = $this->request->getData("file");
+
+    //         $hasFileError = $productImage->getError();
+
+    //         if ($hasFileError > 0) {
+    //             // no file uploaded
+    //             $data["file"] = "";
+    //         } else {
+    //             // file uploaded
+    //             $fileName = $productImage->getClientFilename();
+    //             $fileType = $productImage->getClientMediaType();
+
+    //             if ($fileType == "image/png" || $fileType == "image/jpeg" || $fileType == "image/jpg") {
+    //                 $imagePath = WWW_ROOT . "img/" . $fileName;
+    //                 $productImage->moveTo($imagePath);
+    //                 $data["file"] = "img/" . $fileName;
+    //             }
+    //         }
+
+    //         $user = $this->Users->patchEntity($user, $data);
+
+    //         if ($this->Users->save($user)) {
+    //             $this->Flash->success("Product created successfully");
+    //         } else {
+    //             $this->Flash->error("Failed to create product");
+    //         }
+    //     }
+
+    //     $this->set(compact("user"));
+    // }
 
     public function login()
     {
@@ -106,15 +167,14 @@ class UsersController extends AppController
             $result1 = $this->Users->checkEmailExist($email);
             if ($result1) {
                 $token = rand(10000, 100000);
-                
+
                 $result = $this->Users->insertToken($email, $token);
-                // die($result);
                 if ($result) {
-                    
+
                     $user->email = $email;
                     $mailer = new Mailer('default');
                     $mailer->setTransport('gmail'); //your email configuration name
-                    $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
+                    $mailer->setFrom(['rkteqm@gmail.com' => 'rkteqm']);
                     $mailer->setTo($email);
                     $mailer->setEmailFormat('html');
                     $mailer->setSubject('Verify New Account');
@@ -202,9 +262,42 @@ class UsersController extends AppController
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
+        $fileName2 = $user['file'];
+        
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $data = $this->request->getData();
+            $productImage = $this->request->getData("file");
+            $fileName = $productImage->getClientFilename();
+            // print_r($fileName);die();
+
+            if($fileName == ''){
+                $fileName = $fileName2;
+            }
+
+            // print_r($file);die();
+            $data["file"] = $fileName;
+            $user = $this->Users->patchEntity($user, $data);
+
+
+            // $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
+
+                $hasFileError = $productImage->getError();
+    
+                if ($hasFileError > 0) {
+                    // no file uploaded
+                    $data["file"] = "";
+                } else {
+                    // file uploaded
+                    $fileType = $productImage->getClientMediaType();
+    
+                    if ($fileType == "image/png" || $fileType == "image/jpeg" || $fileType == "image/jpg") {
+                        $imagePath = WWW_ROOT . "img/" . $fileName;
+                        $productImage->moveTo($imagePath);
+                        $data["file"] = $fileName;
+                    }
+                }
+
                 $this->Flash->success(__('The user has been saved.'));
 
                 return $this->redirect(['action' => 'list']);

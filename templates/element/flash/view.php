@@ -32,6 +32,10 @@ $this->Breadcrumbs->add(
             ?>
             <table>
                 <tr>
+                    <th><?= __('File') ?></th>
+                    <td><?= $this->Html->image(h($user->file), array('width' => '300px')) ?></td>
+                </tr>
+                <tr>
                     <th><?= __('First Name') ?></th>
                     <td><?= h($user->first_name) ?></td>
                 </tr>

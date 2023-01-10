@@ -15,7 +15,7 @@
         </aside>
         <div class="container">
             <div class="users form content">
-                <?= $this->Form->create($user, ['type' => 'file']) ?>
+                <?= $this->Form->create($user, ["enctype" => "multipart/form-data"]) ?>
                 <fieldset>
                     <legend><?= __('Add User') ?></legend>
                     <div class="row">

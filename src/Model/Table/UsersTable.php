@@ -133,27 +133,27 @@ class UsersTable extends Table
         $validator
             ->scalar('password')
             ->maxLength('password', 255)
-            ->requirePresence('password', 'create')
-            // ->add('password', [
-            //     'notBlank' => [
-            //         'rule'    => ['notBlank'],
-            //         'message' => 'Please enter your password',
-            //     ],
-            //     'upperCase' => [
-            //         'rule' => 'isUpperCase'
-            //     ],
-            //     'length' => [
-            //         'rule' => ['minLength', 8],
-            //         'message' => 'Enter password at least 8 characters long'
-            //     ],
-            // ]);
-            ->add('password', 'custom', [
-                'rule' => function ($value, $context) {
-                    // Custom logic that returns true/false; the password will be in the $value
+            ->requirePresence('password', 'create');
+        // ->add('password', [
+        //     'notBlank' => [
+        //         'rule'    => ['notBlank'],
+        //         'message' => 'Please enter your password',
+        //     ],
+        //     'upperCase' => [
+        //         'rule' => 'isUpperCase'
+        //     ],
+        //     'length' => [
+        //         'rule' => ['minLength', 8],
+        //         'message' => 'Enter password at least 8 characters long'
+        //     ],
+        // ]);
+        // ->add('password', 'custom', [
+        //     'rule' => function ($value, $context) {
+        //         // Custom logic that returns true/false; the password will be in the $value
 
-                },
-                'message' => 'Password must contain ...'
-            ]);
+        //     },
+        //     'message' => 'Password must contain ...'
+        // ]);
 
         $validator
             ->scalar('confirm_password')
@@ -185,18 +185,13 @@ class UsersTable extends Table
         $validator
             ->scalar('file')
             ->requirePresence('file', 'create')
-            ->notEmptyFile('file', 'Please select your file');
-        // ->add('file', [
-        //     'validExtension' => [
-        //         'rule' => ['extension', ['png']], // default  ['gif', 'jpeg', 'png', 'jpg']
-        //         'message' => 'These files extension are allowed: png'
-        //     ],
-        //     'validSize' => [
-        //         'rule' => ['fileSize', '<=', '1MB'],
-        //         'message' => 'These files greater than 1 mb'
-        //     ],
-
-        // ]);
+            ->notEmptyString('file', 'Please select your file')
+            ->add('file', [
+                'validExtension' => [
+                    'rule' => ['extension', ['gif', 'jpeg', 'png', 'jpg']], // default  ['gif', 'jpeg', 'png', 'jpg']
+                    'message' => 'These files extension are allowed: png ,jpeg, png, jpg'
+                ],
+            ]);
 
 
         return $validator;
@@ -216,7 +211,7 @@ class UsersTable extends Table
         return $rules;
     }
 
-    
+
 
     public function login($email, $password)
     {
