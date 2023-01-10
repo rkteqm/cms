@@ -198,9 +198,20 @@ class UsersTable extends Table
         $result = $this->find('all')->where(['id' => $id])->first();
         return $result;
     }
+    
     public function login($email, $password)
     {
         $result = $this->find('all')->where(['email' => $email, 'password' => $password])->first();
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function checkMailExist($email)
+    {
+        $result = $this->find('all')->where(['email' => $email])->first();
         if ($result) {
             return true;
         } else {

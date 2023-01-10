@@ -101,6 +101,74 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'login']);
     }
 
+    public function forgot()
+    {
+        $this->viewBuilder()->setLayout('mydefault');
+        $user = $this->Users->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $email = $this->request->getData('email');
+            $user->email = $email;
+            $result = $this->Users->checkMailExist($email);
+            if ($result) {
+                
+                $mailer = new Mailer('default');
+                $mailer->setTransport('gmail'); //your email configuration name
+                $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
+                $mailer->setTo($email);
+                $mailer->setEmailFormat('html');
+                $mailer->setSubject('Verify New Account');
+                $mailer->deliver('Hi $name<br/>Welcome to Code The Pixel.');
+
+                $this->Flash->success(__('Reset email send successfully.'));
+
+                return $this->redirect(['action' => 'login']);
+            }
+            $this->Flash->error(__('Please enter valid credential..'));
+
+            // $mailer = new Mailer('default');
+            // $mailer->setTransport('gmail'); //your email configuration name
+            // $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
+            // $mailer->setTo($email);
+            // $mailer->setEmailFormat('html');
+            // $mailer->setSubject('Verify New Account');
+            // $mailer->deliver('Hi $name<br/>Welcome to Code The Pixel.');
+
+            // $this->Flash->success(__('Your account has been registered.'));
+            // return $this->redirect(['action' => 'login']);
+        }
+        $this->set(compact('user'));
+    }
+
+    public function sendMail()
+    {
+        $user = $this->Users->newEmptyEntity();
+
+        if ($this->request->is('post')) {
+            // $userTable = TableRegistry::get('Users');
+            $name = $this->request->getData('name');
+            $email = $this->request->getData('email');
+            // $user = $userTable->newEntity($this->request->getData());
+            // if ($userTable->save($user)) {
+            $user->name = $name;
+            $user->email = $email;
+
+            $mailer = new Mailer('default');
+            $mailer->setTransport('smtp'); //your email configuration name
+            $mailer->setFrom(['noreply[at]codethep!xel.com' => 'Code The Pixel']);
+            $mailer->setTo($email);
+            $mailer->setEmailFormat('html');
+            $mailer->setSubject('Verify New Account');
+            $mailer->deliver('Hi $name<br/>Welcome to Code The Pixel.');
+
+            $this->Flash->success(__('Your account has been registered.'));
+            return $this->redirect(['action' => 'index']);
+            // } else {
+            //     $this->Flash->error(__('Registration failed, please try again.'));
+            // }
+        }
+        $this->set(compact('user'));
+    }
+
     public function list()
     {
         $session = $this->request->getSession(); //read session data
@@ -108,7 +176,7 @@ class UsersController extends AppController
         } else {
             $this->redirect(['action' => 'login']);
         }
-        
+
         $this->viewBuilder()->setLayout('mydefault');
         $users = $this->paginate($this->Users);
 
@@ -133,7 +201,7 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
-            
+
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 

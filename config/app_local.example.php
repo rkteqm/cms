@@ -82,6 +82,16 @@ return [
      * See app.php for more configuration options.
      */
     'EmailTransport' => [
+        'gmail' => [
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'username' => 'rkteqm@gmail.com', //eg: sample[at]gmail.com
+            'password' => 'ggdbvypvxcfzwjif', //email password
+            'className' => 'Smtp',
+            'tls' => true,
+            'client' => null,
+            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+        ],
         'default' => [
             'host' => 'localhost',
             'port' => 25,
