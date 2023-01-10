@@ -36,6 +36,8 @@ class User extends Entity
         'password' => true,
         'gender' => true,
         'created_date' => true,
+        'token' => true,
+        'file' => true,
     ];
 
     /**

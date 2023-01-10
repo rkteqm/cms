@@ -8,6 +8,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * Users Model
@@ -138,7 +139,7 @@ class UsersTable extends Table
                     'last' => true
                 ],
                 'password' => [
-                    'rule' => array('custom','(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
+                    'rule' => array('custom', '(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
                     'message' => 'password should contain alteast 8 digits, 1 Special Character, 1 number, 1 uppercase, 1 lowercase'
                 ]
             ]);
@@ -154,7 +155,7 @@ class UsersTable extends Table
                     'last' => true,
                 ],
                 'confirm_password' => [
-                    'rule' => array('custom','(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
+                    'rule' => array('custom', '(^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]*).{8,}$)'),
                     'last' => true,
                     'message' => 'confirm password should contain alteast 8 digits, 1 Special Character, one number, 1 uppercase, 1 lowercase '
                 ],
@@ -168,6 +169,10 @@ class UsersTable extends Table
         $validator
             ->requirePresence('gender', 'create')
             ->notEmptyString('gender');
+
+        $validator
+            ->requirePresence('file', 'create')
+            ->notEmptyString('file');
 
 
         return $validator;
@@ -198,7 +203,7 @@ class UsersTable extends Table
         $result = $this->find('all')->where(['id' => $id])->first();
         return $result;
     }
-    
+
     public function login($email, $password)
     {
         $result = $this->find('all')->where(['email' => $email, 'password' => $password])->first();
@@ -209,9 +214,41 @@ class UsersTable extends Table
         }
     }
 
-    public function checkMailExist($email)
+    public function resetPassword($token, $password)
     {
-        $result = $this->find('all')->where(['email' => $email])->first();
+        $servername = "localhost";
+        $username = "root";
+        $db_password = "password";
+        $database = "cakecrud";
+        $conn = mysqli_connect($servername, $username, $db_password, $database);
+        $sql = "UPDATE `users` SET `password` = '$password', `token` = '' WHERE `token` = '$token' ";
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function checktokenexist($token)
+    {
+        $result = $this->find('all')->where(['token' => $token])->first();
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function checkMailExist($email, $token)
+    {
+        $servername = "localhost";
+        $username = "root";
+        $db_password = "password";
+        $database = "cakecrud";
+        $conn = mysqli_connect($servername, $username, $db_password, $database);
+        $sql = "UPDATE `users` SET `token` = '$token' WHERE `email` = '$email' ";
+        $result = mysqli_query($conn, $sql);
         if ($result) {
             return true;
         } else {

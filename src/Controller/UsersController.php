@@ -61,6 +61,9 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('mydefault');
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
+            echo '<pre>';
+            print_r($this->request->getData());
+            // die;
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
@@ -108,34 +111,51 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $email = $this->request->getData('email');
             $user->email = $email;
-            $result = $this->Users->checkMailExist($email);
+            $token = rand(10000, 100000);
+
+            $result = $this->Users->checkMailExist($email, $token);
+            // die($result);
             if ($result) {
-                
+
                 $mailer = new Mailer('default');
                 $mailer->setTransport('gmail'); //your email configuration name
                 $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
                 $mailer->setTo($email);
                 $mailer->setEmailFormat('html');
                 $mailer->setSubject('Verify New Account');
-                $mailer->deliver('Hi $name<br/>Welcome to Code The Pixel.');
+                $mailer->deliver('<a href="http://localhost:8765/users/reset?token=' . $token . '">Click here</a>');
 
                 $this->Flash->success(__('Reset email send successfully.'));
 
                 return $this->redirect(['action' => 'login']);
             }
             $this->Flash->error(__('Please enter valid credential..'));
-
-            // $mailer = new Mailer('default');
-            // $mailer->setTransport('gmail'); //your email configuration name
-            // $mailer->setFrom(['rkteqm@gmail.com' => 'Code The Pixel']);
-            // $mailer->setTo($email);
-            // $mailer->setEmailFormat('html');
-            // $mailer->setSubject('Verify New Account');
-            // $mailer->deliver('Hi $name<br/>Welcome to Code The Pixel.');
-
-            // $this->Flash->success(__('Your account has been registered.'));
-            // return $this->redirect(['action' => 'login']);
         }
+        $this->set(compact('user'));
+    }
+
+    public function reset()
+    {
+
+        $this->viewBuilder()->setLayout('mydefault');
+        $user = $this->Users->newEmptyEntity();
+        $token = $_REQUEST['token'];
+        $result = $this->Users->checktokenexist($token);
+        if ($result) {
+            if ($this->request->is('post')) {
+                $password = $this->request->getData('password');
+                $res = $this->Users->resetPassword($token, $password);
+                // die($res);
+                if ($res) {
+                    $this->Flash->success(__('Password updated successfully.'));
+                    return $this->redirect(['action' => 'login']);
+                }
+                $this->Flash->error(__('Please enter valid password'));
+            }
+        } else {
+            return $this->redirect(['action' => 'login']);
+        }
+
         $this->set(compact('user'));
     }
 

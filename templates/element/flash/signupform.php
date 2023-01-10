@@ -15,10 +15,14 @@
         </aside>
         <div class="container">
             <div class="users form content">
-                <?= $this->Form->create($user) ?>
+                <?= $this->Form->create($user, ['type' => 'file']) ?>
                 <fieldset>
                     <legend><?= __('Add User') ?></legend>
                     <div class="row">
+                        <div class="col-md-6">
+                            <?= $this->Form->control('file', ['type' => 'file', 'required' => false]) ?>
+                            <span class="error-message" id="file-name-error"></span>
+                        </div>
                         <div class="col-md-6">
                             <?= $this->Form->control('first_name', ['required' => false]) ?>
                             <span class="error-message" id="first-name-error"></span>
