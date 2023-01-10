@@ -37,14 +37,6 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
-    {
-        $user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set(compact('user'));
-    }
 
     public function myview($id = null)
     {
@@ -61,10 +53,10 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('mydefault');
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
-            echo '<pre>';
-            print_r($this->request->getData());
-            // die;
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            echo '<pre>';
+            print_r($this->request->getData('file'));
+            die;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -159,36 +151,6 @@ class UsersController extends AppController
         $this->set(compact('user'));
     }
 
-    public function sendMail()
-    {
-        $user = $this->Users->newEmptyEntity();
-
-        if ($this->request->is('post')) {
-            // $userTable = TableRegistry::get('Users');
-            $name = $this->request->getData('name');
-            $email = $this->request->getData('email');
-            // $user = $userTable->newEntity($this->request->getData());
-            // if ($userTable->save($user)) {
-            $user->name = $name;
-            $user->email = $email;
-
-            $mailer = new Mailer('default');
-            $mailer->setTransport('smtp'); //your email configuration name
-            $mailer->setFrom(['noreply[at]codethep!xel.com' => 'Code The Pixel']);
-            $mailer->setTo($email);
-            $mailer->setEmailFormat('html');
-            $mailer->setSubject('Verify New Account');
-            $mailer->deliver('Hi $name<br/>Welcome to Code The Pixel.');
-
-            $this->Flash->success(__('Your account has been registered.'));
-            return $this->redirect(['action' => 'index']);
-            // } else {
-            //     $this->Flash->error(__('Registration failed, please try again.'));
-            // }
-        }
-        $this->set(compact('user'));
-    }
-
     public function list()
     {
         $session = $this->request->getSession(); //read session data
@@ -216,21 +178,6 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
-    {
-        $user = $this->Users->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
-        }
-        $this->set(compact('user'));
-    }
 
     /**
      * Edit method
@@ -239,22 +186,6 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
-        $user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
-        }
-        $this->set(compact('user'));
-    }
 
     public function myedit($id = null)
     {
@@ -286,18 +217,6 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
-    }
 
     public function mydelete($id = null)
     {
@@ -316,14 +235,4 @@ class UsersController extends AppController
         'limit' => 10
     ];
 
-    // this is only for getting data for particular id using UsersTable // custom function
-    public function getdata($id = null)
-    {
-        $this->viewBuilder()->setLayout('mydefault');
-        // $result = $this->Users->getdata($id);
-        $result = $this->Users->getdata(50);
-        echo '<pre>';
-        print_r($result);
-        die('ffffffffffffff');
-    }
 }

@@ -9,6 +9,8 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\TableRegistry;
+
 
 /**
  * Users Model
@@ -167,12 +169,25 @@ class UsersTable extends Table
             ]);
 
         $validator
+            ->scalar('gender')
             ->requirePresence('gender', 'create')
             ->notEmptyString('gender');
 
         $validator
+            ->scalar('file')
             ->requirePresence('file', 'create')
-            ->notEmptyString('file');
+            ->notEmptyFile('file', 'Please select your file');
+        // ->add('file', [
+        //     'validExtension' => [
+        //         'rule' => ['extension', ['png']], // default  ['gif', 'jpeg', 'png', 'jpg']
+        //         'message' => 'These files extension are allowed: png'
+        //     ],
+        //     'validSize' => [
+        //         'rule' => ['fileSize', '<=', '1MB'],
+        //         'message' => 'These files greater than 1 mb'
+        //     ],
+
+        // ]);
 
 
         return $validator;
@@ -192,18 +207,6 @@ class UsersTable extends Table
         return $rules;
     }
 
-    // this is only for getting data for particular id using UsersTable // custom function
-    public function getdata($id)
-    {
-        // $query = $users
-        // ->find()
-        // ->select(['id', 'first_name'])
-        // ->where(['id =' => ])
-        // ->order(['created' => 'DESC']);
-        $result = $this->find('all')->where(['id' => $id])->first();
-        return $result;
-    }
-
     public function login($email, $password)
     {
         $result = $this->find('all')->where(['email' => $email, 'password' => $password])->first();
@@ -216,13 +219,12 @@ class UsersTable extends Table
 
     public function resetPassword($token, $password)
     {
-        $servername = "localhost";
-        $username = "root";
-        $db_password = "password";
-        $database = "cakecrud";
-        $conn = mysqli_connect($servername, $username, $db_password, $database);
-        $sql = "UPDATE `users` SET `password` = '$password', `token` = '' WHERE `token` = '$token' ";
-        $result = mysqli_query($conn, $sql);
+        $users = TableRegistry::get("Users");
+        $query = $users->query();
+        $result = $query->update()
+            ->set(['password' => $password, 'token' => ''])
+            ->where(['token' => $token])
+            ->execute();
         if ($result) {
             return true;
         } else {
@@ -242,13 +244,12 @@ class UsersTable extends Table
 
     public function checkMailExist($email, $token)
     {
-        $servername = "localhost";
-        $username = "root";
-        $db_password = "password";
-        $database = "cakecrud";
-        $conn = mysqli_connect($servername, $username, $db_password, $database);
-        $sql = "UPDATE `users` SET `token` = '$token' WHERE `email` = '$email' ";
-        $result = mysqli_query($conn, $sql);
+        $users = TableRegistry::get("Users");
+        $query = $users->query();
+        $result = $query->update()
+            ->set(['token' => $token])
+            ->where(['email' => $email])
+            ->execute();
         if ($result) {
             return true;
         } else {

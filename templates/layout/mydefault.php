@@ -19,7 +19,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 ?>
 <?= $this->element('flash/header') ?>
 <?= $this->Html->css(['user', 'normalize.min', 'milligram.min', 'cake']) ?>
-<?= $this->Html->script('script') ?>
+<!-- <?= $this->Html->script('script') ?> -->
 <?= $this->element('flash/navbar') ?>
 <div class="rahul">
     <?= $this->Breadcrumbs->render() ?>
